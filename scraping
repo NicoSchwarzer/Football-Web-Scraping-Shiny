@@ -1,0 +1,55 @@
+####
+
+library(xml2)
+library(rvest)
+library(rlist)
+library(stringi)
+library(tidyr)
+
+####
+
+
+c2_goal <- ".tr-item:nth-child(1) .text-center:nth-child(6)"
+c2_pen <- ".content-tabelle:nth-child(3) .tr-item:nth-child(1) .hidden-xs~ .hidden-xs+ .hidden-xs"
+c2_time <- ".content-tabelle:nth-child(3) .tr-item:nth-child(1) .pr+ .hidden-xs"
+
+
+
+years <- rep(0,9)
+top_goals <- rep(0,9)
+pens <- rep(0,9)
+times <- rep(0,9)
+
+
+# looping 
+
+for (i in 0:8) {
+  
+  year <- 2012 + i 
+  years[i+1] <- year
+
+  url <- paste0("https://www.fussballdaten.de/Bundesliga/", year ,"/statistik/")
+  
+  page <-    read_html(url)
+  
+  
+  goal <- html_nodes(page, css = c2_goal)
+  pena <- html_nodes(page, css = c2_pen)
+  ti <- html_nodes(page, css = c2_time)
+  
+  
+  g <- html_text(goal)
+  p <- html_text(pena)
+  t <- html_text(ti)
+  
+  top_goals[i+1] <- g
+  pens[i+1] <- p
+  times[i+1] <- t
+  
+}
+
+goals_df <- data.frame(top_goals)
+goals_df$penalties <- pens
+goals_df$time_on_pitch <- times
+goals_df$year <- c("2012","2013","2014","2015","2016","2017","2018","2019","2020")
+
