@@ -1,0 +1,23 @@
+## shiny app 
+library(shiny)
+
+# 1
+# app where one can add a catergoy 
+
+
+ui <- fluidPage(
+  title = "Overview of best scorers",
+  checkboxGroupInput("variable", "Variables to show:",
+                     c("Penalties" = "penalties",
+                       "Time on Pitch" = "time_on_pitch"),
+                     inline = TRUE),
+  tableOutput("data")
+)
+
+server <- function(input, output) {
+  output$data <- renderTable({
+    goals_df[, c("top_goals", input$variable), drop = FALSE]
+  }, rownames = TRUE)
+}
+
+shinyApp(ui, server)
