@@ -1,0 +1,30 @@
+## shiny app 
+library(shiny)
+
+###
+
+# 2
+# app which shows the development of goals after one season 
+
+
+goals_df_2 <- goals_df[,c(1:4)]
+
+
+ui_2 <- fluidPage(
+  numericInput("min", "select the starting year:", value = 2012, min = 2012, max = 2015),
+  radioButtons("var", "Select variable:", names(goals_df_2), inline = TRUE),
+  plotOutput("histPlot")
+)
+
+
+server_2 <- function(input, output) {
+  
+  output$histPlot <- renderPlot({ 
+    goal2 <- goals_df[goals_df$year > (input$min -1), ]
+    
+    ggplot(goal2, aes(year, input$var)) + 
+      geom_point()
+  })
+}
+
+shinyApp(ui_2, server_2)
